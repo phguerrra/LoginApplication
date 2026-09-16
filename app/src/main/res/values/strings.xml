@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Conta</string>
+    <string name="auth_title_register">Crie sua conta</string>
+    <string name="auth_subtitle_register">Use seu nome, e-mail e uma senha segura.</string>
+    <string name="auth_title_login">Entre na sua conta</string>
+    <string name="auth_subtitle_login">Informe o e-mail e a senha usados no cadastro.</string>
+    <string name="name_label">Nome</string>
+    <string name="email_label">E-mail</string>
+    <string name="password_label">Senha</string>
+    <string name="register">Criar conta</string>
+    <string name="login">Entrar</string>
+    <string name="already_registered">Já tenho uma conta</string>
+    <string name="need_account">Quero criar uma conta</string>
+    <string name="welcome">Olá, %1$s!</string>
+    <string name="welcome_default">Boas-vindas!</string>
+    <string name="logout">Sair</string>
+    <string name="profile_name_not_saved">Conta criada, mas o nome não pôde ser salvo.</string>
+    <string name="firebase_not_configured">Firebase ainda não configurado. Adicione app/google-services.json.</string>
+    <string name="generic_error">Não foi possível concluir. Tente novamente.</string>
+</resources>

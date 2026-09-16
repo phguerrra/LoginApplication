@@ -1,0 +1,161 @@
+package com.example.application;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+
+public class RegisterActivity extends AppCompatActivity {
+    private TextInputLayout nameLayout;
+    private TextInputLayout emailLayout;
+    private TextInputLayout passwordLayout;
+    private TextInputEditText nameInput;
+    private TextInputEditText emailInput;
+    private TextInputEditText passwordInput;
+    private TextView authError;
+    private MaterialButton registerButton;
+    private MaterialButton backToLoginButton;
+    private ProgressBar authProgress;
+
+    private FirebaseAuth auth;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
+        bindViews();
+        setupActions();
+
+        if (FirebaseApp.getApps(this).isEmpty()) {
+            showConfigurationRequired();
+            return;
+        }
+        auth = FirebaseAuth.getInstance();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (auth != null && auth.getCurrentUser() != null) {
+            openWelcome();
+        }
+    }
+
+    private void bindViews() {
+        nameLayout = findViewById(R.id.name_layout);
+        emailLayout = findViewById(R.id.email_layout);
+        passwordLayout = findViewById(R.id.password_layout);
+        nameInput = findViewById(R.id.name_input);
+        emailInput = findViewById(R.id.email_input);
+        passwordInput = findViewById(R.id.password_input);
+        authError = findViewById(R.id.auth_error);
+        registerButton = findViewById(R.id.register_button);
+        backToLoginButton = findViewById(R.id.back_to_login_button);
+        authProgress = findViewById(R.id.auth_progress);
+    }
+
+    private void setupActions() {
+        registerButton.setOnClickListener(view -> createAccount());
+        backToLoginButton.setOnClickListener(view -> finish());
+        passwordInput.setOnEditorActionListener((view, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                createAccount();
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void createAccount() {
+        if (auth == null) {
+            showConfigurationRequired();
+            return;
+        }
+        clearErrors();
+
+        String name = textOf(nameInput).trim();
+        String email = textOf(emailInput).trim();
+        String password = textOf(passwordInput);
+        String nameError = AuthInputValidator.validateName(name);
+        String emailError = AuthInputValidator.validateEmail(email);
+        String passwordError = AuthInputValidator.validatePassword(password);
+        nameLayout.setError(nameError);
+        emailLayout.setError(emailError);
+        passwordLayout.setError(passwordError);
+        if (nameError != null || emailError != null || passwordError != null) {
+            return;
+        }
+
+        setLoading(true);
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    FirebaseUser user = auth.getCurrentUser();
+                    if (!task.isSuccessful() || user == null) {
+                        setLoading(false);
+                        showError(AuthErrorMessages.from(this, task.getException()));
+                        return;
+                    }
+
+                    UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .build();
+                    user.updateProfile(profile).addOnCompleteListener(this, profileTask -> {
+                        setLoading(false);
+                        if (!profileTask.isSuccessful()) {
+                            Toast.makeText(this, R.string.profile_name_not_saved, Toast.LENGTH_LONG).show();
+                        }
+                        openWelcome();
+                    });
+                });
+    }
+
+    private void openWelcome() {
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void setLoading(boolean loading) {
+        authProgress.setVisibility(loading ? View.VISIBLE : View.GONE);
+        registerButton.setEnabled(!loading);
+        backToLoginButton.setEnabled(!loading);
+        nameInput.setEnabled(!loading);
+        emailInput.setEnabled(!loading);
+        passwordInput.setEnabled(!loading);
+    }
+
+    private void clearErrors() {
+        authError.setVisibility(View.GONE);
+        nameLayout.setError(null);
+        emailLayout.setError(null);
+        passwordLayout.setError(null);
+    }
+
+    private void showConfigurationRequired() {
+        showError(getString(R.string.firebase_not_configured));
+        registerButton.setEnabled(false);
+    }
+
+    private void showError(String message) {
+        authError.setText(message);
+        authError.setVisibility(View.VISIBLE);
+    }
+
+    private static String textOf(TextInputEditText input) {
+        return input.getText() == null ? "" : input.getText().toString();
+    }
+}
