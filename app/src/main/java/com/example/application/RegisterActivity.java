@@ -50,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (auth != null && auth.getCurrentUser() != null) {
-            openWelcome();
+            openEvents();
         }
     }
 
@@ -117,13 +117,13 @@ public class RegisterActivity extends AppCompatActivity {
                         if (!profileTask.isSuccessful()) {
                             Toast.makeText(this, R.string.profile_name_not_saved, Toast.LENGTH_LONG).show();
                         }
-                        openWelcome();
+                        openEvents();
                     });
                 });
     }
 
-    private void openWelcome() {
-        Intent intent = new Intent(this, WelcomeActivity.class);
+    private void openEvents() {
+        Intent intent = new Intent(this, EventsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

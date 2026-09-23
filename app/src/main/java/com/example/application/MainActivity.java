@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (auth != null && auth.getCurrentUser() != null) {
-            openWelcome();
+            openEvents();
         }
     }
 
@@ -96,15 +96,15 @@ public class MainActivity extends AppCompatActivity {
                     setLoading(false);
                     if (task.isSuccessful() && auth.getCurrentUser() != null) {
                         passwordInput.setText("");
-                        openWelcome();
+                        openEvents();
                     } else {
                         showError(AuthErrorMessages.from(this, task.getException()));
                     }
                 });
     }
 
-    private void openWelcome() {
-        Intent intent = new Intent(this, WelcomeActivity.class);
+    private void openEvents() {
+        Intent intent = new Intent(this, EventsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
