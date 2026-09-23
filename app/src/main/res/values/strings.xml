@@ -17,4 +17,7 @@
     <string name="profile_name_not_saved">Conta criada, mas o nome não pôde ser salvo.</string>
     <string name="firebase_not_configured">Firebase ainda não configurado. Adicione app/google-services.json.</string>
     <string name="generic_error">Não foi possível concluir. Tente novamente.</string>
+    <string name="events_title">Eventos</string>
+    <string name="events_subtitle">Encontre e acompanhe os próximos eventos.</string>
+    <string name="events_empty">Nenhum evento disponível no momento.</string>
 </resources>
