@@ -28,21 +28,25 @@
 
         <TextView
             android:id="@+id/event_date_time"
+            style="@style/EventMetadataText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="@color/brand_primary"
             android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_calendar"
+            app:drawableTint="@color/brand_primary"
             tools:text="15/10/2026 às 19:00" />
 
         <TextView
             android:id="@+id/event_location"
+            style="@style/EventMetadataText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="@color/text_secondary"
+            app:drawableStartCompat="@drawable/ic_location"
+            app:drawableTint="@color/text_secondary"
             tools:text="Centro de Convenções" />
 
         <TextView
